@@ -1,6 +1,5 @@
 """
     A BST implementation
-    Last modified at: 2020/4/28
 """
 
 
@@ -115,6 +114,9 @@ class BSTNode(object):
         """
         Removes and returns this node from the BST.
 
+        Returns:
+            The deleted node with key k.
+
         Running Time:
             O(log(n))
         """
@@ -189,7 +191,7 @@ class BSTNode(object):
         else:
             return self.left.find_min()
 
-    def __check_ri(self):
+    def check_ri(self):
         """
         Checks the BST representation invariant around this node.
     
@@ -201,15 +203,15 @@ class BSTNode(object):
         if self.left is not None:
             assert(self.left.key <= self.key)
             assert(self.left.parent is self)
-            self.left.__check_ri()
+            self.left.check_ri()
         if self.right is not None:
             assert(self.right.key >= self.key)
             assert(self.right.parent is self)
-            self.right.__check_ri()
+            self.right.check_ri()
 
 class BST(object):
     """A binary search tree. Node type is TreeNode"""
-    def __init__(self):
+    def __init__(self, node_class = BSTNode):
         """
         Creates a BST.
         
@@ -217,6 +219,7 @@ class BST(object):
             O(1)
         """
         self.root = None
+        self.node_class = node_class
 
     """str method is copied from mit 6.006 material"""
     def __str__(self):
@@ -239,31 +242,42 @@ class BST(object):
         """
         return self.root.find(k)
 
-    def insert(self, key):
+    def insert(self, k):
         """
-        Inserts a node into the BST.
+        Inserts a node with key k into the BST.
         
         Args:
-            node: The node to be inserted.
+            k: The key of the node to be inserted.
+        
+        Returns:
+            The node inserted.
         
         Running Time:
             O(log(n))
         """
+        node = self.node_class(k, None)
         if(self.root is None):
-            self.root = BSTNode(key, None)
+            self.root = node
         else:
-            self.root.insert(BSTNode(key, None))
+            self.root.insert(node)
+        return node
 
     def remove(self, k):
         """
         Removes and returns the node with key k from the BST.
+
+        Args:
+            k: The key of the node that we want to delete.
+            
+        Returns:
+            The deleted node with key k.
 
         Running Time:
             O(log(n))
         """
         node = self.find(k)
         if(node is self.root):
-            pseudoroot = BSTNode(0, None)
+            pseudoroot = self.node_class(0, None)
             pseudoroot.left = self.root
             self.root.parent = pseudoroot
             root = self.root.remove()
@@ -298,17 +312,17 @@ class BST(object):
         """
         if self.root is not None:
             assert(self.root.parent is None)
-            self.root.__check_ri()
+            self.root.check_ri()
+
+    def find_min(self):
+        """Returns the minimum key of this BST."""
+        
+        return self.root and self.root.find_min().key
+
+    def find_max(self):
+        """Returns the maxmum key of this BST."""
+        
+        return self.root and self.root.find_max().key
 
 
-if __name__ == "__main__":
-    tree = BST()
-    tree.insert(3)
-
-    tree.insert(1)
-
-    tree.insert(5)
-
-    tree.insert(2)
-    print(tree)
         

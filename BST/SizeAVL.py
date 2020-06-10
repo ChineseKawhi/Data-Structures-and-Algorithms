@@ -1,20 +1,16 @@
 """
-    A SizeBST implementation:
-    An augmented BST that keeps track of the node with 
+    A SizeAVL implementation:
+    An augmented AVL that keeps track of the node with 
     the number of nodes in the subtree rooted at this node
 """
 
-from BST import BSTNode, BST
+from AVL import AVLNode, AVL
 
-def size(node):
-    if node is None:
-        return 0
-    else:
-        return node.size
 
-class SizeBSTNode(BSTNode):
+
+class SizeAVLNode(AVLNode):
     """
-    A BSTNode which is augmented to keep track of 
+    A AVLNode which is augmented to keep track of 
     the number of nodes in the subtree rooted at this node.
     """
     def __init__(self, key, parent):
@@ -25,27 +21,28 @@ class SizeBSTNode(BSTNode):
             parent: The node's parent.
             k: key of the node.
         """
-        super(SizeBSTNode, self).__init__(key, parent)
-        self.size = 1
-
+        super(SizeAVLNode, self).__init__(key, parent)
+        self.height = 1
+    
     def _update_info(self):
-        self.size = 1 + size(self.left) + size(self.right)
-        if(self.parent is not None):
-            self.parent._update_info()
+        self.height = max(AVL._height(self.left), AVL._height(self.right)) + 1
+        self.size = 1 + SizeAVL._size(self.left) + SizeAVL._size(self.right)
 
     def rank(self, k):
         """
-        Count the number of nodes that key is less than k.
-
+        Count the number of nodes that key is smaller than k
+        from the subtree rooted at this node.
+        
         Args:
-            k: The key that the nodes' key is less than.
+            k: The key of the node we want to find.
         
         Returns:
-            The number of nodes that key is less than k
+            The node with key k.
 
         Running Time:
             O(log(n))
         """
+
         if k < self.key:
             if(self.left is None):
                 return 0
@@ -55,7 +52,7 @@ class SizeBSTNode(BSTNode):
             if self.right is None:  
                 return self.size
             else:
-                return 1 + size(self.left) + self.right.rank(k)
+                return 1 + SizeAVL._size(self.left) + self.right.rank(k)
 
     def check_ri(self):
         """
@@ -67,26 +64,35 @@ class SizeBSTNode(BSTNode):
             O(n)
         """
         size = 1
+        assert((AVL._height(self.right) - AVL._height(self.left) < 2) or\
+            (AVL._height(self.right) - AVL._height(self.left) > -2))
         if self.left is not None:
             assert(self.left.key <= self.key)
             assert(self.left.parent is self)
-            size += self.left.size
+            size += SizeAVL._size(self.left)
             self.left.check_ri()
         if self.right is not None:
             assert(self.right.key >= self.key)
             assert(self.right.parent is self)
-            size += self.right.size
+            size += SizeAVL._size(self.right)
             self.right.check_ri()
         assert(self.size == size)
-
-class SizeBST(BST):
+        
+class SizeAVL(AVL):
     """
-    An augmented BST that keeps track of the node with 
+    An augmented AVL that keeps track of the node with 
     the number of nodes in the subtree rooted at this node
     """
-    def __init__(self, node_class = SizeBSTNode):
-        super(SizeBST, self).__init__(node_class)
-    
+    def __init__(self, node_class = SizeAVLNode):
+        super(SizeAVL, self).__init__(node_class)
+
+    @staticmethod
+    def _size(node):
+        if node is None:
+            return 0
+        else:
+            return node.size
+
     def rank(self, k):
         """
         Count the number of nodes that key is less than k.
@@ -111,40 +117,6 @@ class SizeBST(BST):
         else:
             return self.root.rank(k2) - self.root.rank(k1)
 
-    def insert(self, k):
-        """
-        Inserts a node into the SizeBST.
-        
-        Args:
-            k: The key of the node to be inserted.
-        
-        Returns:
-            The node inserted.
-        
-        Running Time:
-            O(log(n))
-        """
-        node = super(SizeBST, self).insert(k)
-        node._update_info()
-        return node
-
-    def remove(self, k):
-        """
-        Removes and returns the node with key k from the SizeBST.
-
-        Args:
-            k: The key of the node that we want to delete.
-            
-        Returns:
-            The deleted node with key k.
-
-        Running Time:
-            O(log(n))
-        """
-        node = super(SizeBST, self).remove(k)
-        node._update_info()
-        return node
-
     def check_ri(self):
         """
         Checks the BST representation invariant.
@@ -154,3 +126,5 @@ class SizeBST(BST):
         if self.root is not None:
             assert(self.root.parent is None)
             self.root.check_ri()
+        
+
