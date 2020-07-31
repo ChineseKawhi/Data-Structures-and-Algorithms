@@ -8,4 +8,4 @@ Content:
         BST(binary search tree), 
         SizeAVL, 
         SizeBST, 
-        vEB(van Emde boas)
+        vEB(van Emde Boas)
