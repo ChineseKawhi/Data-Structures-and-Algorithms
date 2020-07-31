@@ -6,6 +6,4 @@ Content:
     2.Tree:
         AVL, 
         BST(binary search tree), 
-        SizeAVL, 
-        SizeBST, 
         vEB(van Emde Boas)
