@@ -8,4 +8,4 @@ Content: \
 　3.Tree: \
 　　AVL, \
 　　BST(binary search tree), \
-　　vEB(van Emde Boas) \
+　　vEB(van Emde Boas)
