@@ -178,18 +178,4 @@ class Heap:
             r = self._get_right_child_idx(i)
             if(r <= lastIdx):
                 assert(self.heap[i].key <= self.heap[r].key)
-'''
-    test program
-'''
-# if __name__ == "__main__":
-#     h = Heap([Node("四", 4), Node("一", 1), Node("三", 3), Node("二", 2), Node("十六", 16), Node("九", 9), Node("十", 10), Node("十四", 14), Node("八", 8), Node("七", 7)])
-#     # h.print_values()
-#     h.insert(Node("一点五", 1.5))
-#     # print("ex:",h.extract_min())
-#     h.print_values()
-#     print("ex:",h.extract_min())
-#     print("ex:",h.extract_min())
-#     print("ex:",h.extract_min())
-#     print("ex:",h.extract_min())
-#     print("ex:",h.extract_min())
-#     print("ex:",h.extract_min())
+
